@@ -1,0 +1,16 @@
+Add departments, roles, employees
+--use inserts
+
+View departments, roles, employees
+--SELECT * FROM 
+
+Update employee roles
+
+
+use inquirer to get user input (what they want), 
+use the input (.then) to send sql query and 
+show information with console.table
+
+choices with inquirer / list
+
+sql query with js
