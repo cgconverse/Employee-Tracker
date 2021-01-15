@@ -97,6 +97,7 @@ function addDepartment() {
         });
 };
 
+//function to view department table
 function viewDepartment() {
     connection.query (
         "SELECT * FROM employeeTracker_DB.department",
@@ -109,6 +110,7 @@ function viewDepartment() {
     )
 };
 
+//function to add a role
 function addRole() {
     // prompt for info about the role
     inquirer
