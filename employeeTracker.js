@@ -135,7 +135,20 @@ function addRole() {
                 }
             );
         });
-}
+};
+
+//function that displays the role table
+function viewRole() {
+    connection.query (
+        "SELECT * FROM employeeTracker_DB.role",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+            
+            start();
+        }
+    )
+};
 
 function updateRole() {
     connection.query (
