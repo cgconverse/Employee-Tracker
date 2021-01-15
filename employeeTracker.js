@@ -35,7 +35,7 @@ function start() {
                 "View role", "View employees", "Update employee roles"]
         })
         .then(function (answer) {
-            // based on their answer, either call the bid or the post functions
+            // Depending on the user's answer--add, view, or update something
             switch (answer.EmployeeTracker) {
                 case "Add a department":
                     addDepartment()
@@ -44,17 +44,33 @@ function start() {
                 case "View department":
                     viewDepartment()
                     break;
+
+                case "Add a role":
+                    addRole()
+                    break;
+                
+                case "View role":
+                    viewRole()
+                    break;
                 
                 case "Update employee roles" :
                     updateRole()
+                    break;
+
+                case "Add an employee":
+                    addEmployee()
+                    break;
+
+                case "View employees":
+                    viewEmployees()
                     break;
             }
         });
 }
 
-// function to handle posting new items up for auction
+// function to handle adding a new department
 function addDepartment() {
-    // prompt for info about the item being put up for auction
+    // prompt for info about the department
     inquirer
         .prompt([
             {
@@ -65,7 +81,7 @@ function addDepartment() {
 
         ])
         .then(function (answer) {
-            // when finished prompting, insert a new item into the db with that info
+            // when finished prompting, insert a new department into the db with that info
             connection.query(
                 "INSERT INTO employeeTracker_DB.department SET ?",
                 {
@@ -74,12 +90,12 @@ function addDepartment() {
                 function (err) {
                     if (err) throw err;
                     console.log("Your department was created successfully!");
-                    // re-prompt the user for if they want to bid or post
+                    
                     start();
                 }
             );
         });
-}
+};
 
 function viewDepartment() {
     connection.query (
@@ -87,11 +103,39 @@ function viewDepartment() {
         function (err, res) {
             if (err) throw err;
             console.table(res);
-            // re-prompt the user for if they want to bid or post
+            
             start();
         }
     )
 };
+
+function addRole() {
+    // prompt for info about the role
+    inquirer
+        .prompt([
+            {
+                name: "role",
+                type: "input",
+                message: "What role would you like to add?"
+            },
+
+        ])
+        .then(function (answer) {
+            // when finished prompting, insert a new role into the db with that info
+            connection.query(
+                "INSERT INTO employeeTracker_DB.role SET ?",
+                {
+                    title: answer.role,
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("Your role was created successfully!");
+                    
+                    start();
+                }
+            );
+        });
+}
 
 function updateRole() {
     connection.query (
@@ -117,7 +161,7 @@ function updateRole() {
             message: "What is the id of the employee you want to update?"
         }])
         .then(function (answer) {
-            // when finished prompting, insert a new item into the db with that info
+            // when finished prompting, update the employee role with the new information
             connection.query(
                 "INSERT INTO employeeTracker_DB.department SET ?",
                 {
@@ -125,10 +169,11 @@ function updateRole() {
                 },
                 function (err) {
                     if (err) throw err;
-                    console.log("Your department was created successfully!");
-                    // re-prompt the user for if they want to bid or post
+                    console.log("The employee role was updated successfully!");
+                    
                     start();
                 }
             );
         });
-}
+};
+

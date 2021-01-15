@@ -2,7 +2,7 @@
 
 ## Description
 
-An app that allows the user to manage a company's employees.
+An app that allows a business owner to manage the company's employees.
 
 ## User Story
 
