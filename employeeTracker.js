@@ -48,12 +48,12 @@ function start() {
                 case "Add a role":
                     addRole()
                     break;
-                
+
                 case "View role":
                     viewRole()
                     break;
-                
-                case "Update employee roles" :
+
+                case "Update employee roles":
                     updateRole()
                     break;
 
@@ -90,7 +90,7 @@ function addDepartment() {
                 function (err) {
                     if (err) throw err;
                     console.log("Your department was created successfully!");
-                    
+
                     start();
                 }
             );
@@ -99,12 +99,79 @@ function addDepartment() {
 
 //function to view department table
 function viewDepartment() {
-    connection.query (
+    connection.query(
         "SELECT * FROM employeeTracker_DB.department",
         function (err, res) {
             if (err) throw err;
             console.table(res);
-            
+
+            start();
+        }
+    )
+};
+
+
+
+
+// function to handle adding a new employee
+function addEmployee() {
+    // prompt for info about the employee
+    inquirer
+        .prompt([
+            {
+                name: "firstName",
+                type: "input",
+                message: "What is the employee's first name?"
+            },
+
+            {
+                name: "lastName",
+                type: "input",
+                message: "What is the employee's last name?"
+            },
+
+            {
+                name: "roleId",
+                type: "input",
+                message: "What is the employee's role id?"
+            },
+
+            {
+                name: "managerId",
+                type: "input",
+                message: "What is the employee's manager id?"
+            },
+        ])
+        .then(function (answer) {
+            console.table(answer)
+            // when finished prompting, insert a new employee into the db with that info
+            connection.query(
+                "INSERT INTO employeeTracker_DB.employee SET ?",
+                {
+                    first_name: answer.firstName,
+                    last_name: answer.lastName,
+                    role_id: answer.roleId,
+                    manager_id: answer.managerId
+
+                },
+                function (err) {
+                    if (err) throw err;
+                    console.log("The employee was added successfully!");
+
+                    start();
+                }
+            );
+        });
+};
+
+//function to view employee table
+function viewEmployees() {
+    connection.query(
+        "SELECT * FROM employeeTracker_DB.employee",
+        function (err, res) {
+            if (err) throw err;
+            console.table(res);
+
             start();
         }
     )
@@ -132,7 +199,7 @@ function addRole() {
                 function (err) {
                     if (err) throw err;
                     console.log("Your role was created successfully!");
-                    
+
                     start();
                 }
             );
@@ -141,26 +208,27 @@ function addRole() {
 
 //function that displays the role table
 function viewRole() {
-    connection.query (
+    connection.query(
         "SELECT * FROM employeeTracker_DB.role",
         function (err, res) {
             if (err) throw err;
             console.table(res);
-            
+
             start();
         }
     )
 };
 
+//function to update employee role
 function updateRole() {
-    connection.query (
+    connection.query(
         "SELECT * FROM employeeTracker_DB.employee",
         function (err, res) {
             if (err) throw err;
             console.table(res);
         }
     );
-    connection.query (
+    connection.query(
         "SELECT * FROM employeeTracker_DB.role",
         function (err, res) {
             if (err) throw err;
@@ -169,26 +237,48 @@ function updateRole() {
     )
 
     inquirer
-    .prompt([
-        {
-            name: "role",
-            type: "input",
-            message: "What is the id of the employee you want to update?"
-        }])
+        .prompt([
+            {
+                name: "id",
+                type: "input",
+                message: "What is the id of the employee you want to update?"
+            },
+
+        ])
         .then(function (answer) {
-            // when finished prompting, update the employee role with the new information
             connection.query(
-                "INSERT INTO employeeTracker_DB.department SET ?",
-                {
-                    title: answer.department,
-                },
-                function (err) {
+                "SELECT * FROM employeeTracker_DB.role",
+                function (err, res) {
                     if (err) throw err;
-                    console.log("The employee role was updated successfully!");
-                    
-                    start();
+                    console.table(res);
                 }
-            );
+            )
+            inquirer
+                .prompt([
+                    {
+                        name: "role",
+                        type: "input",
+                        message: "What is the id of the new role?"
+                    }
+                ])
+
+                .then(function (data) {
+
+                    // when finished prompting, update the employee role with the new information
+                    connection.query(
+                        "UPDATE employeeTracker_DB.employee SET role_id = ? WHERE id = ?",
+                        [data.role, answer.id]
+                        ,
+                        function (err) {
+                            if (err) throw err;
+                            console.log("The employee role was updated successfully!");
+
+                            start();
+                        }
+                    );
+                }
+                )
+
         });
 };
 
